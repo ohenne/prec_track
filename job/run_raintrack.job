@@ -1,0 +1,71 @@
+#!/bin/bash
+
+##########################
+# INPUT SETTINGS
+##########################
+# SET PATH
+#
+JOBNAME='COSMO_LES_ACCACIA' 
+FIN=$modelo/COSMO_LES_ACCACIA/totprec.nc
+VAR='TOT_PREC' #'twp' #'twp' #r_int' #'rwp' #'r_int'
+OUT=/nbi/ac/conv1/henneb/results/${JOBNAME}/${VAR}
+# SET PARAMETER
+cutoff=0.1           # cut off for precip (mm/s), use 3 strings
+mincellsize=20      # minimum rain cell size, use 3 strings
+domsizex=333 
+domsizey=333 
+dt=360
+res=100
+###########################
+## DIRECTORY STRUCTURE
+############################
+mkdir -p ${OUT}/output/
+mkdir -p ${OUT}/input/
+
+###################################################
+# prepare input
+###################################################
+nField=0
+for i in ${VAR} # 'rwp' 'gwp' 'twp' 'cwp'  # variable list for object properties
+do
+  if [ ! -f ${OUT}/input/irt_objects_input_0${nField}.srv ]; then
+    cdo -f srv selvar,${i} $FIN ${OUT}/input/irt_objects_input_0${nField}.srv
+    echo $FIN
+  fi
+  echo $i 
+  nField=$(( $nField + 1 ))   
+done
+nField=$(( $nField - 1 ))
+########################
+## MAKE NAMELIST 
+#######################
+     sed \
+        -e s%@{nx}%${domsizex}%g \
+        -e s%@{ny}%${domsizey}%g \
+        -e s%@{dto}%${dt}%g \
+        -e s%@{dx}%${res}%g \
+        -e s%@{cutoff}%${cutoff}%g \
+        -e s%@{mincellsize}%${mincellsize}%g \
+        -e s%@{OUT}%${OUT}%g \
+        -e s%@{nField}%${nField}%g \
+       <namelist.tmp>namelist.dat
+#
+cp namelist.dat $OUT/.
+cd ..
+#
+#####################################################
+### run_tracking
+#####################################################
+./bin/irt_objects_release.x 1
+./bin/irt_advection_field_release.x
+./bin/irt_tracks_release.x
+sort -n -k2 ${OUT}/output/irt_tracks_nohead_output.txt > ${OUT}/output/irt_tracks_sorted.txt
+./bin/irt_trackmask_release.x
+#
+cdo -f nc copy ${OUT}/output/irt_objects_mask.srv ${OUT}/output/irt_objects_mask.nc
+cdo -f nc copy ${OUT}/output/irt_tracks_mask.srv ${OUT}/output/irt_tracks_mask.nc
+#
+./bin/cut.bsh ${OUT} # cuts the header and body to separate files
+sort -n -k2 ${OUT}/output/irt_tracks_output_pure.txt > ${OUT}/output/irt_tracks_output_pure_sort.txt
+
+

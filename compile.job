@@ -1,0 +1,18 @@
+#!/bin/bash
+# TODOS
+# How to compile having parameters.m in the bin directory? 
+
+set -ex
+COMPILE_COMMAND='gfortran'
+
+    SRC='src/'
+    BIN='bin/'
+    ${COMPILE_COMMAND} -c $SRC/irt_parameters.f90
+    #${COMPILE_COMMAND} -o $BIN/irt_objects_release.x $SRC/irt_objects_release.f90 $SRC/irt_parameters.f90
+    ${COMPILE_COMMAND} -fcheck=all -o $BIN/irt_objects_release.x $SRC/irt_objects_release.f90 $SRC/irt_parameters.f90
+    ${COMPILE_COMMAND} -o $BIN/irt_advection_field_release.x $SRC/irt_advection_field_release.f90 $SRC/irt_parameters.f90
+    ${COMPILE_COMMAND} -o $BIN/irt_tracks_release.x $SRC/irt_tracks_release.f90 $SRC/irt_parameters.f90 
+    ${COMPILE_COMMAND} -o $BIN/irt_trackmask_release.x $SRC/irt_trackmask_release.f90 $SRC/irt_parameters.f90 #-no-wrap-margin
+
+
+

@@ -1,0 +1,19 @@
+&INPUT2
+n_fields=@{nField},
+/
+&INPUTgeneral
+! general 
+dsize_x=@{nx},  !domainsize
+dsize_y=@{ny},   
+dt=@{dto},      !output timestep 
+res=@{dx},
+n_fields=@{nField},
+/  
+&INPUTIO
+odir='@{OUT}'
+/
+&INPUTrain
+cutoff=@{cutoff}           ! cut off for precip (mm/s)
+minimum_size=@{mincellsize}  
+/
+

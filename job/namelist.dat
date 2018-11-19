@@ -1,0 +1,19 @@
+&INPUT2
+n_fields=0,
+/
+&INPUTgeneral
+! general 
+dsize_x=333,  !domainsize
+dsize_y=333,   
+dt=360,      !output timestep 
+res=100,
+n_fields=0,
+/  
+&INPUTIO
+odir='/nbi/ac/conv1/henneb/results/COSMO_LES_ACCACIA/TOT_PREC'
+/
+&INPUTrain
+cutoff=0.1           ! cut off for precip (mm/s)
+minimum_size=20  
+/
+

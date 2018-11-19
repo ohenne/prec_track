@@ -1,0 +1,22 @@
+#!/bin/bash
+opath=$1
+echo $opath
+cp ${opath}/output/irt_tracks_output.txt ${opath}/output/irt_tracks_output_pure.txt
+egrep -nr "(\*)" ${opath}/output/irt_tracks_output_pure.txt | cut -d : -f 1 > linenumbers.txt
+counter=0
+one=1
+while read line; do 
+   echo $line # or whaterver you want to do with the $line variable
+   linetodel=$(( line - counter ))
+   linetokeep=$(( linetodel + one ))
+   echo $linetodel
+   sed -n "${linetokeep}p" ${opath}/output/irt_tracks_output_pure.txt >> ${opath}/output/headerfile.txt
+   sed -i "${linetodel}d" ${opath}/output/irt_tracks_output_pure.txt
+   sed -i "${linetodel}d" ${opath}/output/irt_tracks_output_pure.txt
+   ((counter++))
+   ((counter++))
+done < linenumbers.txt
+rm linenumbers.txt
+
+
+#sed -e '5,10d;12d' file
