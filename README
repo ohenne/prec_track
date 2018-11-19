@@ -1,0 +1,39 @@
+###########################################
+16.11.2018
+##########################################
+compile the sourcecode: 
+##########################################
+./compile.job
+
+##########################################
+run the code:
+##########################################
+1.make your setting in job/run_raintrack.job
+  INPUT SETTINGS
+  - give your job a name, folders will be created given this name
+  - define the input path and file name "FIN" 
+  - define the variable name that is used for the tracking
+  - set parameters like cutoff, domainsize ...
+ 
+  prepare input
+  - define variables which are also calculated along the objects
+
+2. run the job with ./run_raintrack.job
+
+##########################################
+what is the job file doing
+##########################################
+1. creates an output folder
+2. copys and transformes your input data into .srv
+3. ajust the parameter input file 'namelist.tmp' from a template file 'namelist.tmp'
+   it's not neccessary to compile again!
+4. runs the raintracking
+5. copys data to output
+
+##########################################
+TO DOES
+##########################################
+- number of iteration is not an input paramter yet 
+
+
+
